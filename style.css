@@ -1,0 +1,161 @@
+/* -------------------------
+   RESET DE BASE
+-------------------------- */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+/* -------------------------
+   CARTE (hauteur ajustée)
+-------------------------- */
+#map {
+  height: calc(100% - 200px); /* hauteur adaptée à la top bar */
+  width: 100%;
+}
+
+/* -------------------------
+   TOP BAR BLEUE COMPLETTE
+-------------------------- */
+header {
+  background: #1a73e8;
+  color: white;
+  padding: 10px 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* -------------------------
+   BARRE DE RECHERCHE
+-------------------------- */
+#topSearch {
+  display: flex;
+  width: 100%;
+  gap: 5px;
+}
+
+#topSearch input {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+}
+
+#topSearch button {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: none;
+  background: #0c5dd5;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+/* -------------------------
+   AUTOCOMPLÉTION
+-------------------------- */
+#autocompleteList {
+  position: absolute;
+  top: 145px; /* juste sous la barre de recherche */
+  left: 15px;
+  right: 15px;
+  background: white;
+  color: black; /* texte lisible */
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-radius: 8px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+  z-index: 9999;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+#autocompleteList li {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  color: black; /* texte visible */
+}
+
+#autocompleteList li:hover {
+  background: #e3e3e3;
+  color: black;
+}
+
+#autocompleteList.hidden {
+  display: none;
+}
+
+/* -------------------------
+   BOUTONS (GPS / EXPORT / RESET / SUPPRIMER)
+-------------------------- */
+#topButtons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+#topButtons button {
+  padding: 8px 12px;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  background: #0c5dd5;
+  color: white;
+  cursor: pointer;
+}
+
+#topButtons button:active {
+  opacity: 0.7;
+}
+
+/* bouton supprimer rouge */
+#btnDelete {
+  background: #d32f2f !important;
+}
+
+/* -------------------------
+   POPUP : TYPE DE CACHE
+-------------------------- */
+#typePopup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#typePopup.hidden {
+  display: none;
+}
+
+#typePopup select,
+#typePopup button {
+  padding: 8px;
+  font-size: 15px;
+}
+
+/* -------------------------
+   STYLE DES BOUTONS GÉNÉRAL
+-------------------------- */
+button {
+  cursor: pointer;
+}
