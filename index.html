@@ -2,38 +2,57 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="mobile-web-app-capable" content="yes">
 
   <title>GeoVAS - Carte des caches</title>
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="style.css">
-  <meta name="theme-color" content="#1a73e8">
+  <meta name="theme-color" content="#003D5C">
 </head>
 
 <body>
 
+  <!-- NOTIFICATION NOUVELLE CACHE -->
+  <div id="notification" class="notification hidden">
+    <span class="notification-icon">📍</span>
+    <div class="notification-content">
+      <div class="notification-title">Nouvelle cache ajoutée !</div>
+      <div class="notification-message" id="notificationMessage"></div>
+    </div>
+    <button class="notification-close" onclick="closeNotification()">×</button>
+  </div>
+
   <!-- 🔵 TOP BAR COMPLET -->
   <header>
 
-    <h2>📍 GeoVAS – Caches</h2>
+    <div class="header-title">
+      <img src="logo-pm.jpeg" alt="Police Municipale" class="header-logo-pm">
+      <h2>GeoVAS – Caches</h2>
+    </div>
 
-    <!-- 🔍 BARRE DE RECHERCHE + AUTO-COMPLÉTION -->
-    <div id="topSearch">
-      <input type="text" id="searchInput" placeholder="Adresse ou lieu…">
-      <button id="searchBtn">🔍</button>
+    <!-- 🔍 BARRE DE RECHERCHE + BOUTONS PRINCIPAUX -->
+    <div class="search-row">
+      <div id="topSearch">
+        <input type="text" id="searchInput" placeholder="Adresse ou lieu…">
+        <button id="searchBtn">🔍</button>
+      </div>
+      <button id="btnGPS" class="quick-btn">📍 GPS</button>
+      <button id="btnAdminToggle" class="quick-btn" onclick="toggleAdminMode()">🔓 Admin</button>
     </div>
 
     <!-- LISTE AUTOCOMPLÉTION -->
     <ul id="autocompleteList" class="hidden"></ul>
 
-    <!-- ⚙️ BOUTONS -->
+    <!-- ⚙️ BOUTONS ADMIN -->
     <div id="topButtons">
-      <button id="btnGPS">GPS</button>
-      <button id="btnExport">Export</button>
-      <button id="btnClear">Reset</button>
-      <button id="btnDelete">Supprimer</button>
+      <button id="btnExport" class="admin-only" style="display:none;">💾 Export</button>
+      <button id="btnClear" class="admin-only" style="display:none;">🔄 Reset</button>
+      <button id="btnDelete" class="admin-only" style="display:none;">🗑️ Supprimer</button>
     </div>
 
   </header>
@@ -48,6 +67,18 @@
     </select>
     <button id="validateType">Valider</button>
     <button id="cancelType">Annuler</button>
+  </div>
+
+  <!-- 🔐 POPUP AUTHENTIFICATION ADMIN -->
+  <div id="adminPopup" class="hidden">
+    <h3>🔐 Accès Administrateur</h3>
+    <label>Mot de passe :</label>
+    <input type="password" id="adminPassword" placeholder="Entrez le mot de passe">
+    <div class="admin-buttons">
+      <button id="validateAdmin" onclick="validateAdminPassword()">Valider</button>
+      <button id="cancelAdmin" onclick="closeAdminPopup()">Annuler</button>
+    </div>
+    <p class="admin-hint">💡 Mot de passe : <code>admin123</code></p>
   </div>
 
   <div id="map"></div>

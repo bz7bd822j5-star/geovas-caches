@@ -19,6 +19,16 @@ let pendingLat = null;
 let pendingLng = null;
 let pendingSource = null; // "manuel" ou "gps"
 
+// ===== MODE ADMINISTRATEUR =====
+const ADMIN_PASSWORD = 'admin123'; // Mot de passe admin
+let isAdminMode = false;
+
+// Vérifier le mode admin au démarrage (localStorage)
+if (localStorage.getItem('adminMode') === 'true') {
+  isAdminMode = true;
+  updateAdminUI();
+}
+
 // ===== CHARGEMENT DES CACHES DEPUIS SUPABASE =====
 async function loadCaches() {
   try {
@@ -32,6 +42,7 @@ async function loadCaches() {
       return;
     }
 
+    const previousCount = caches.length;
     caches = data || [];
     
     // Afficher tous les marqueurs
@@ -39,12 +50,35 @@ async function loadCaches() {
       const marker = L.marker([pt.lat, pt.lng]).addTo(map);
       attachDeleteHandler(marker, pt.lat, pt.lng, pt.id);
 
-      let popup = "";
-      if (pt.type) popup += "<b>Type :</b> " + pt.type + "<br>";
-      if (pt.adresse) popup += "<b>Adresse :</b> " + pt.adresse + "<br>";
-      popup += `<button onclick="openNavigation(${pt.lat}, ${pt.lng})" style="margin-top:8px; padding:6px 12px; background:#1a73e8; color:white; border:none; border-radius:5px; cursor:pointer;">📍 Itinéraire</button>`;
+      // Popup amélioré
+      let popup = `<div class="cache-popup">`;
+      popup += `<div class="cache-popup-header">📍 Cache repérée</div>`;
+      
+      if (pt.type) {
+        popup += `<div class="cache-popup-info">`;
+        popup += `<div class="cache-popup-label">Type de cache</div>`;
+        popup += `<div class="cache-popup-value">${pt.type}</div>`;
+        popup += `</div>`;
+      }
+      
+      if (pt.adresse) {
+        popup += `<div class="cache-popup-info">`;
+        popup += `<div class="cache-popup-label">📍 Localisation</div>`;
+        popup += `<div class="cache-popup-value">${pt.adresse}</div>`;
+        popup += `</div>`;
+      }
+      
+      popup += `<button class="cache-popup-btn" onclick="openNavigation(${pt.lat}, ${pt.lng})">🧭 Lancer l'itinéraire</button>`;
+      popup += `</div>`;
+      
       marker.bindPopup(popup);
     });
+
+    // Notification si nouvelle cache détectée
+    if (previousCount > 0 && caches.length > previousCount) {
+      const newCache = caches[0];
+      showNotification(newCache.type || 'Cache', newCache.adresse || 'Nouvelle cache ajoutée');
+    }
 
   } catch (err) {
     console.error('Erreur:', err);
@@ -54,12 +88,99 @@ async function loadCaches() {
 // Charger les caches au démarrage
 loadCaches();
 
+// Vérifier les nouvelles caches toutes les 30 secondes
+setInterval(() => {
+  loadCaches();
+}, 30000);
+
+// ===== SYSTÈME DE NOTIFICATIONS =====
+function showNotification(title, message) {
+  const notification = document.getElementById('notification');
+  const notificationMessage = document.getElementById('notificationMessage');
+  
+  notificationMessage.textContent = message;
+  notification.classList.remove('hidden');
+  
+  // Masquer automatiquement après 5 secondes
+  setTimeout(() => {
+    notification.classList.add('hidden');
+  }, 5000);
+}
+
+function closeNotification() {
+  document.getElementById('notification').classList.add('hidden');
+}
+
+// ===== GESTION MODE ADMINISTRATEUR =====
+function toggleAdminMode() {
+  if (isAdminMode) {
+    // Déconnexion admin
+    isAdminMode = false;
+    localStorage.removeItem('adminMode');
+    updateAdminUI();
+    alert('✅ Mode utilisateur activé');
+  } else {
+    // Demander le mot de passe
+    document.getElementById('adminPopup').classList.remove('hidden');
+  }
+}
+
+function validateAdminPassword() {
+  const password = document.getElementById('adminPassword').value;
+  
+  if (password === ADMIN_PASSWORD) {
+    isAdminMode = true;
+    localStorage.setItem('adminMode', 'true');
+    updateAdminUI();
+    closeAdminPopup();
+    alert('✅ Mode administrateur activé');
+  } else {
+    alert('❌ Mot de passe incorrect');
+    document.getElementById('adminPassword').value = '';
+  }
+}
+
+function closeAdminPopup() {
+  document.getElementById('adminPopup').classList.add('hidden');
+  document.getElementById('adminPassword').value = '';
+}
+
+function updateAdminUI() {
+  const adminBtn = document.getElementById('btnAdminToggle');
+  const adminOnlyButtons = document.querySelectorAll('.admin-only');
+  
+  if (isAdminMode) {
+    adminBtn.textContent = '🔒 Mode Admin (ON)';
+    adminBtn.classList.add('admin-active');
+    adminOnlyButtons.forEach(btn => btn.style.display = 'block');
+  } else {
+    adminBtn.textContent = '🔓 Mode Admin';
+    adminBtn.classList.remove('admin-active');
+    adminOnlyButtons.forEach(btn => btn.style.display = 'none');
+  }
+}
+
+// Fermer popup admin avec Entrée
+document.addEventListener('DOMContentLoaded', () => {
+  const adminPasswordInput = document.getElementById('adminPassword');
+  if (adminPasswordInput) {
+    adminPasswordInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') validateAdminPassword();
+    });
+  }
+});
+
 /* ---------------------------------------------------
    🔴 MODE SUPPRESSION DE MARQUEUR
 --------------------------------------------------- */
 let deleteMode = false;
 
 document.getElementById("btnDelete").addEventListener("click", () => {
+  if (!isAdminMode) {
+    alert("⚠️ Action réservée aux administrateurs");
+    return;
+  }
+  
   deleteMode = !deleteMode;
 
   if (deleteMode) {
@@ -133,10 +254,26 @@ async function createMarker(lat, lng, meta) {
 
   attachDeleteHandler(marker, lat, lng, newCache.id);
 
-  let popupContent = "";
-  if (meta.type) popupContent += "<b>Type :</b> " + meta.type + "<br>";
-  if (meta.adresse) popupContent += "<b>Adresse :</b> " + meta.adresse + "<br>";
-  popupContent += `<button onclick="openNavigation(${lat}, ${lng})" style="margin-top:8px; padding:6px 12px; background:#1a73e8; color:white; border:none; border-radius:5px; cursor:pointer;">📍 Itinéraire</button>`;
+  // Popup amélioré
+  let popupContent = `<div class="cache-popup">`;
+  popupContent += `<div class="cache-popup-header">📍 Cache repérée</div>`;
+  
+  if (meta.type) {
+    popupContent += `<div class="cache-popup-info">`;
+    popupContent += `<div class="cache-popup-label">Type de cache</div>`;
+    popupContent += `<div class="cache-popup-value">${meta.type}</div>`;
+    popupContent += `</div>`;
+  }
+  
+  if (meta.adresse) {
+    popupContent += `<div class="cache-popup-info">`;
+    popupContent += `<div class="cache-popup-label">📍 Localisation</div>`;
+    popupContent += `<div class="cache-popup-value">${meta.adresse}</div>`;
+    popupContent += `</div>`;
+  }
+  
+  popupContent += `<button class="cache-popup-btn" onclick="openNavigation(${lat}, ${lng})">🧭 Lancer l'itinéraire</button>`;
+  popupContent += `</div>`;
 
   marker.bindPopup(popupContent);
 
@@ -319,11 +456,21 @@ document.addEventListener("click", (e) => {
    🔵 EXPORT JSON
 --------------------------------------------------- */
 document.getElementById("btnExport").addEventListener("click", async () => {
+  if (!isAdminMode) {
+    alert("⚠️ Action réservée aux administrateurs");
+    return;
+  }
+  
   // Recharger les données depuis Supabase pour être sûr d'avoir tout
   const { data, error } = await supabase
     .from('caches')
     .select('*')
     .order('created_at', { ascending: false });
+
+  if (error) {
+    alert('❌ Erreur lors de l\'export');
+    return;
+  }
 
   const exportData = data || caches;
   const jsonData = JSON.stringify(exportData, null, 2);
@@ -332,15 +479,22 @@ document.getElementById("btnExport").addEventListener("click", async () => {
 
   const a = document.createElement("a");
   a.href = url;
-  a.download = "caches_vas.json";
+  a.download = `caches_vas_${new Date().toISOString().split('T')[0]}.json`;
   a.click();
+  
+  alert('✅ Export réussi !');
 });
 
 /* ---------------------------------------------------
    🔵 RESET
 --------------------------------------------------- */
 document.getElementById("btnClear").addEventListener("click", async () => {
-  if (confirm("Effacer tous les points de la base de données partagée ?")) {
+  if (!isAdminMode) {
+    alert("⚠️ Action réservée aux administrateurs");
+    return;
+  }
+  
+  if (confirm("⚠️ ATTENTION : Effacer tous les points de la base de données partagée ?\n\nCette action est irréversible !")) {
     // Supprimer tous les caches de Supabase
     const { error } = await supabase
       .from('caches')
@@ -349,9 +503,10 @@ document.getElementById("btnClear").addEventListener("click", async () => {
 
     if (error) {
       console.error('Erreur reset:', error);
-      alert('Erreur lors de la suppression');
+      alert('❌ Erreur lors de la suppression');
     } else {
       caches = [];
+      alert('✅ Base de données réinitialisée');
       location.reload();
     }
   }

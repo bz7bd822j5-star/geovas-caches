@@ -11,20 +11,69 @@ html, body {
    CARTE (hauteur ajustée)
 -------------------------- */
 #map {
-  height: calc(100% - 200px); /* hauteur adaptée à la top bar */
+  height: calc(100vh - 180px); /* hauteur adaptée à la top bar */
   width: 100%;
+  position: relative;
+  touch-action: pan-x pan-y;
+}
+
+@media (max-width: 768px) {
+  #map {
+    height: calc(100vh - 160px);
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  #map {
+    height: calc(100vh - 170px);
+  }
 }
 
 /* -------------------------
    TOP BAR BLEUE COMPLETTE
 -------------------------- */
 header {
-  background: #1a73e8;
+  background: linear-gradient(135deg, #003D5C 0%, #004D73 100%);
   color: white;
-  padding: 10px 15px;
+  padding: 12px 15px;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+@media (max-width: 768px) {
+  header {
+    padding: 10px 12px;
+    gap: 8px;
+  }
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: center;
+}
+
+.header-logo-pm {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  border: 2px solid white;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .header-logo-pm {
+    height: 40px;
+    width: 40px;
+  }
 }
 
 header h2 {
@@ -33,32 +82,102 @@ header h2 {
   font-weight: bold;
 }
 
+@media (max-width: 768px) {
+  header h2 {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  header h2 {
+    font-size: 16px;
+  }
+}
+
 /* -------------------------
-   BARRE DE RECHERCHE
+   LIGNE RECHERCHE + BOUTONS
 -------------------------- */
+.search-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+}
+
 #topSearch {
   display: flex;
-  width: 100%;
+  flex: 1;
   gap: 5px;
+  min-width: 0;
 }
 
 #topSearch input {
   flex: 1;
-  padding: 8px 10px;
-  border-radius: 6px;
+  padding: 10px 12px;
+  border-radius: 8px;
   border: none;
   outline: none;
   font-size: 14px;
+  min-width: 0;
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (max-width: 768px) {
+  #topSearch input {
+    font-size: 16px; /* Évite le zoom sur iOS */
+    padding: 12px;
+  }
 }
 
 #topSearch button {
-  padding: 8px 12px;
-  border-radius: 6px;
+  padding: 10px 14px;
+  border-radius: 8px;
   border: none;
-  background: #0c5dd5;
+  background: #4A9BD8;
   color: white;
   cursor: pointer;
   font-size: 16px;
+  transition: all 0.3s;
+  flex-shrink: 0;
+}
+
+#topSearch button:hover {
+  background: #3A8BC8;
+  transform: scale(1.05);
+}
+
+/* Boutons rapides (GPS, Admin) */
+.quick-btn {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  background: #4A9BD8;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s;
+  white-space: nowrap;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 44px; /* Taille minimale tactile iOS */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .quick-btn {
+    padding: 12px 18px;
+    font-size: 15px;
+  }
+}
+
+.quick-btn:hover {
+  background: #3A8BC8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(74, 155, 216, 0.3);
 }
 
 /* -------------------------
@@ -66,7 +185,7 @@ header h2 {
 -------------------------- */
 #autocompleteList {
   position: absolute;
-  top: 145px; /* juste sous la barre de recherche */
+  top: 125px; /* juste sous la barre de recherche */
   left: 15px;
   right: 15px;
   background: white;
@@ -111,18 +230,54 @@ header h2 {
   font-size: 14px;
   border: none;
   border-radius: 6px;
-  background: #0c5dd5;
+  background: #4A9BD8;
   color: white;
   cursor: pointer;
+  transition: all 0.3s;
+  font-weight: 500;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 44px;
+}
+
+@media (max-width: 768px) {
+  #topButtons button {
+    padding: 12px 16px;
+    font-size: 15px;
+    width: 100%;
+  }
+  
+  #topButtons {
+    gap: 10px;
+  }
+}
+
+#topButtons button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
 #topButtons button:active {
-  opacity: 0.7;
+  transform: translateY(0);
+}
+
+/* Bouton admin visible uniquement sur desktop */
+.quick-btn#btnAdminToggle {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .quick-btn#btnAdminToggle {
+    display: block;
+  }
 }
 
 /* bouton supprimer rouge */
 #btnDelete {
-  background: #d32f2f !important;
+  background: #E74C3C !important;
+}
+
+#btnDelete:hover {
+  background: #C0392B !important;
 }
 
 /* -------------------------
@@ -134,13 +289,22 @@ header h2 {
   left: 50%;
   transform: translate(-50%, -50%);
   background: white;
-  padding: 15px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
   z-index: 99999;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
+  min-width: 300px;
+  max-width: 90vw;
+}
+
+@media (max-width: 768px) {
+  #typePopup {
+    width: 90vw;
+    padding: 20px;
+  }
 }
 
 #typePopup.hidden {
@@ -149,8 +313,149 @@ header h2 {
 
 #typePopup select,
 #typePopup button {
-  padding: 8px;
+  padding: 12px;
   font-size: 15px;
+  border-radius: 8px;
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 44px;
+}
+
+#typePopup select {
+  border: 2px solid #ddd;
+  background: white;
+  font-weight: 500;
+}
+
+#typePopup button {
+  border: none;
+  background: #4A9BD8;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+#typePopup button:hover {
+  background: #3A8BC8;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+  #typePopup select,
+  #typePopup button {
+    padding: 14px;
+    font-size: 16px;
+  }
+}
+
+/* -------------------------
+   POPUP ADMIN
+-------------------------- */
+#adminPopup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0,61,92,0.4);
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  min-width: 300px;
+}
+
+#adminPopup.hidden {
+  display: none;
+}
+
+#adminPopup h3 {
+  margin: 0;
+  color: #003D5C;
+  font-size: 20px;
+  text-align: center;
+}
+
+#adminPopup label {
+  color: #003D5C;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+#adminPopup input {
+  padding: 12px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 15px;
+  outline: none;
+  transition: border 0.3s;
+}
+
+#adminPopup input:focus {
+  border-color: #4A9BD8;
+}
+
+.admin-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.admin-buttons button {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+#validateAdmin {
+  background: #4A9BD8;
+  color: white;
+}
+
+#validateAdmin:hover {
+  background: #3A8BC8;
+}
+
+#cancelAdmin {
+  background: #e0e0e0;
+  color: #333;
+}
+
+#cancelAdmin:hover {
+  background: #d0d0d0;
+}
+
+.admin-hint {
+  font-size: 12px;
+  color: #7f8c8d;
+  text-align: center;
+  margin: 0;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 6px;
+}
+
+.admin-hint code {
+  background: #e0e0e0;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: monospace;
+}
+
+/* Mode Admin actif */
+#btnAdminToggle.admin-active {
+  background: #27ae60 !important;
+}
+
+#btnAdminToggle.admin-active:hover {
+  background: #229954 !important;
 }
 
 /* -------------------------
@@ -158,4 +463,195 @@ header h2 {
 -------------------------- */
 button {
   cursor: pointer;
+}
+
+/* -------------------------
+   RESPONSIVE SEARCH ROW
+-------------------------- */
+@media (max-width: 768px) {
+  .search-row {
+    flex-wrap: wrap;
+  }
+  
+  #topSearch {
+    flex: 1 1 100%;
+    min-width: 100%;
+  }
+  
+  .quick-btn {
+    flex: 1;
+    min-width: calc(50% - 4px);
+  }
+}
+
+@media (max-width: 480px) {
+  .quick-btn {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+}
+
+/* -------------------------
+   NOTIFICATION NOUVELLE CACHE
+-------------------------- */
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: linear-gradient(135deg, #4A9BD8 0%, #3A8BC8 100%);
+  color: white;
+  padding: 15px 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: slideIn 0.3s ease-out;
+  max-width: 300px;
+}
+
+@media (max-width: 768px) {
+  .notification {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+    padding: 12px 15px;
+  }
+}
+
+.notification.hidden {
+  display: none;
+}
+
+.notification-icon {
+  font-size: 24px;
+}
+
+.notification-content {
+  flex: 1;
+}
+
+.notification-title {
+  font-weight: bold;
+  margin-bottom: 3px;
+}
+
+.notification-message {
+  font-size: 13px;
+  opacity: 0.95;
+}
+
+.notification-close {
+  background: rgba(255,255,255,0.2);
+  border: none;
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* -------------------------
+   POPUP CACHE PERSONNALISÉ
+-------------------------- */
+.leaflet-popup-content-wrapper {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0, 61, 92, 0.3);
+  padding: 0;
+  overflow: hidden;
+}
+
+.leaflet-popup-content {
+  margin: 0;
+  min-width: 200px;
+}
+
+.cache-popup {
+  padding: 15px;
+}
+
+.cache-popup-header {
+  background: linear-gradient(135deg, #003D5C 0%, #004D73 100%);
+  color: white;
+  padding: 12px 15px;
+  margin: -15px -15px 12px -15px;
+  font-weight: bold;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cache-popup-info {
+  margin-bottom: 12px;
+}
+
+.cache-popup-label {
+  color: #003D5C;
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.cache-popup-value {
+  color: #2c3e50;
+  font-size: 14px;
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+.cache-popup-btn {
+  width: 100%;
+  padding: 10px 15px;
+  background: linear-gradient(135deg, #4A9BD8 0%, #3A8BC8 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.cache-popup-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(74, 155, 216, 0.4);
+}
+
+.cache-popup-btn:active {
+  transform: translateY(0);
+}
+
+.leaflet-popup-tip {
+  background: white;
+}
+
+.leaflet-popup-close-button {
+  color: white !important;
+  font-size: 24px !important;
+  padding: 4px 8px !important;
+}
+
+.leaflet-popup-close-button:hover {
+  color: #E74C3C !important;
 }
