@@ -34,3 +34,8 @@ Les icons fournies sont des placeholders 1x1. Remplacez par des PNG 192x192 et 5
 - Reset vide les caches locaux.
 - GPS recentre la carte.
 - Offline: app et caches locaux restent accessibles.
+- Offline: les tuiles OSM restent visibles pour les zones deja chargees.
+- Reconnexion: les caches ajoutes hors-ligne se synchronisent automatiquement.
+
+## Notes de mise a jour
+Voir `notes.md` pour le detail des modifications recentes.
