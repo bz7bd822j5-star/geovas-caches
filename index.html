@@ -1,97 +1,51 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="mobile-web-app-capable" content="yes">
-
-  <title>GeoVAS - Carte des caches</title>
-
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="style.css">
-  <meta name="theme-color" content="#003D5C">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GeoVAS</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="theme-color" content="#0d3b66" />
+  <link rel="stylesheet" href="vendor/leaflet/leaflet.css" />
+  <link rel="stylesheet" href="vendor/leaflet.markercluster.css" />
+  <link rel="stylesheet" href="vendor/leaflet.markercluster.default.css" />
+  <link rel="stylesheet" href="css/style.css" />
 </head>
-
 <body>
-
-  <!-- NOTIFICATION NOUVELLE CACHE -->
-  <div id="notification" class="notification hidden">
-    <span class="notification-icon">📍</span>
-    <div class="notification-content">
-      <div class="notification-title">Nouvelle cache ajoutée !</div>
-      <div class="notification-message" id="notificationMessage"></div>
-    </div>
-    <button class="notification-close" onclick="closeNotification()">×</button>
-  </div>
-
-  <!-- 🔵 TOP BAR COMPLET -->
-  <header>
-
-    <div class="header-title">
-      <img src="logo-pm.jpeg" alt="Police Municipale" class="header-logo-pm">
-      <h2>GeoVAS – Caches</h2>
-    </div>
-
-    <!-- 🔍 BARRE DE RECHERCHE + BOUTONS PRINCIPAUX -->
-    <div class="search-row">
-      <div id="topSearch">
-        <input type="text" id="searchInput" placeholder="Adresse ou lieu…">
-        <button id="searchBtn">🔍</button>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark">GeoVAS</span>
+        <span class="brand-sub">Caches communautaires</span>
       </div>
-      <button id="btnGPS" class="quick-btn">📍 GPS</button>
-      <button id="btnAdminToggle" class="quick-btn" onclick="toggleAdminMode()">🔓 Admin</button>
-    </div>
+      <div class="actions">
+        <button id="btnGps" class="btn">GPS</button>
+        <button id="btnRefresh" class="btn">Actualiser</button>
+        <button id="btnExport" class="btn">Export</button>
+        <button id="btnReset" class="btn btn-danger">Reset</button>
+      </div>
+    </header>
 
-    <!-- LISTE AUTOCOMPLÉTION -->
-    <ul id="autocompleteList" class="hidden"></ul>
+    <main class="main">
+      <section class="map-panel">
+        <div id="map" class="map"></div>
+      </section>
+      <aside class="list-panel" id="listPanel">
+        <div class="list-header">
+          <h2>Liste des caches</h2>
+          <button id="btnToggleList" class="btn btn-ghost" type="button">Liste ↓</button>
+        </div>
+        <ul id="cacheList" class="cache-list"></ul>
+      </aside>
+    </main>
 
-    <!-- ⚙️ BOUTONS ADMIN -->
-    <div id="topButtons">
-      <button id="btnExport" class="admin-only" style="display:none;">💾 Export</button>
-      <button id="btnClear" class="admin-only" style="display:none;">🔄 Reset</button>
-      <button id="btnDelete" class="admin-only" style="display:none;">🗑️ Supprimer</button>
-    </div>
-
-  </header>
-
-  <!-- 🔲 POPUP TYPE DE CACHE -->
-  <div id="typePopup" class="hidden">
-    <label>Type de cache :</label>
-    <select id="cacheType">
-      <option value="Trappe télécom">Trappe télécom</option>
-      <option value="Trappe chauffage urbain">Trappe chauffage urbain</option>
-      <option value="Autre">Autre</option>
-    </select>
-    <button id="validateType">Valider</button>
-    <button id="cancelType">Annuler</button>
+    <footer class="statusbar">
+      <div id="status">Pret.</div>
+    </footer>
   </div>
 
-  <!-- 🔐 POPUP AUTHENTIFICATION ADMIN -->
-  <div id="adminPopup" class="hidden">
-    <h3>🔐 Accès Administrateur</h3>
-    <label>Mot de passe :</label>
-    <input type="password" id="adminPassword" placeholder="Entrez le mot de passe">
-    <div class="admin-buttons">
-      <button id="validateAdmin" onclick="validateAdminPassword()">Valider</button>
-      <button id="cancelAdmin" onclick="closeAdminPopup()">Annuler</button>
-    </div>
-    <p class="admin-hint">💡 Mot de passe : <code>admin123</code></p>
-  </div>
-
-  <div id="map"></div>
-
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="script.js"></script>
-
-  <script>
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("service-worker.js");
-  }
-  </script>
-
+  <script src="vendor/leaflet/leaflet.js"></script>
+  <script src="vendor/leaflet.markercluster.js"></script>
+  <script type="module" src="js/app.js"></script>
 </body>
 </html>

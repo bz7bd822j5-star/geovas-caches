@@ -1,0 +1,227 @@
+:root {
+  --bg: #f4f1ea;
+  --ink: #13213c;
+  --accent: #0d3b66;
+  --accent-2: #f4d35e;
+  --danger: #b23a48;
+  --panel: #ffffff;
+  --muted: #5f6b7a;
+  --shadow: 0 10px 24px rgba(13, 59, 102, 0.12);
+  --radius: 16px;
+  --gap: clamp(12px, 2vw, 18px);
+  --pad: clamp(14px, 4vw, 24px);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
+  color: var(--ink);
+  background: radial-gradient(circle at top, #fef7e7 0%, var(--bg) 40%, #e8f0f8 100%);
+  min-height: 100vh;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap);
+  padding: calc(12px + env(safe-area-inset-top)) var(--pad) 12px;
+  background: var(--panel);
+  box-shadow: var(--shadow);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  flex-wrap: wrap;
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-mark {
+  font-size: clamp(18px, 4vw, 22px);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.brand-sub {
+  font-size: clamp(12px, 2.6vw, 14px);
+  color: var(--muted);
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  border: none;
+  min-height: 44px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: clamp(13px, 2.8vw, 14px);
+  letter-spacing: 0.2px;
+  box-shadow: 0 6px 14px rgba(13, 59, 102, 0.2);
+}
+
+.btn:hover {
+  filter: brightness(1.05);
+}
+
+.btn-danger {
+  background: var(--danger);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--accent);
+  box-shadow: none;
+  border: 1px solid rgba(13, 59, 102, 0.2);
+}
+
+.main {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--gap);
+  padding: var(--gap) var(--pad) calc(var(--gap) + env(safe-area-inset-bottom));
+  flex: 1;
+}
+
+.map-panel,
+.list-panel {
+  background: var(--panel);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.map-panel {
+  min-height: clamp(320px, 60vh, 68vh);
+}
+
+.map {
+  width: 100%;
+  height: 100%;
+  min-height: clamp(320px, 60vh, 68vh);
+}
+
+.list-panel {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: clamp(220px, 34vh, 44vh);
+}
+
+.list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.list-header h2 {
+  margin: 0;
+  font-size: clamp(13px, 3.2vw, 16px);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+}
+
+.cache-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.cache-item {
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: #fefaf1;
+  border: 1px solid #f1e7c4;
+  cursor: pointer;
+  font-size: clamp(14px, 3.2vw, 16px);
+}
+
+.cache-item strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.cache-item span {
+  font-size: clamp(12px, 2.6vw, 13px);
+  color: var(--muted);
+}
+
+.cart-icon {
+  background: white;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 4px 10px rgba(13, 59, 102, 0.25);
+  border: 1px solid rgba(13, 59, 102, 0.15);
+  font-size: 18px;
+}
+
+.list-panel.is-collapsed {
+  max-height: 64px;
+}
+
+.list-panel.is-collapsed .cache-list {
+  display: none;
+}
+
+.statusbar {
+  padding: 8px var(--pad) calc(16px + env(safe-area-inset-bottom));
+  color: var(--muted);
+  font-size: clamp(12px, 2.6vw, 13px);
+}
+
+@media (max-width: 900px) and (orientation: landscape) {
+  .map-panel,
+  .map {
+    min-height: clamp(240px, 50vh, 55vh);
+  }
+
+  .list-panel {
+    max-height: clamp(180px, 32vh, 40vh);
+  }
+}
+
+@media (min-width: 900px) {
+  .main {
+    grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+    align-items: stretch;
+  }
+
+  .list-panel {
+    max-height: none;
+  }
+
+  .btn-ghost {
+    display: none;
+  }
+}

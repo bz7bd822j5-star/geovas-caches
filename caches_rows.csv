@@ -1,0 +1,11 @@
+id,created_at,lat,lng,type,adresse,autoGPS,manuel,recherche
+1,2025-12-03 12:27:13.484609+00,48.8646957,2.3353583,Trappe chauffage urbain,"1, Rue Molière, Quartier du Palais Royal, Paris 1er Arrondissement, Paris, Île-de-France, France métropolitaine, 75001, France",false,false,true
+2,2025-12-05 08:23:14.377129+00,48.8614673317288,2.33979486324923,Trappe télécom,"Monument de l’amiral Gaspard de Coligny, Rue de Rivoli, Paris 1er Arrondissement, Paris, Île-de-France, France métropolitaine, 75001, France",true,false,false
+3,2025-12-05 08:32:48.201+00,48.8628748,2.3363277,Trappe télécom,"Brasserie du Louvre, Rue Saint-Honoré, Quartier du Palais Royal, Paris 1er Arrondissement, Paris, Île-de-France, France métropolitaine, 75001, France",true,false,false
+4,2025-12-05 08:34:51.306497+00,48.8631619,2.3356851,Trappe télécom,"Place Colette, Quartier du Palais Royal, Paris 1er Arrondissement, Paris, France métropolitaine, 75001, France",true,false,false
+5,2025-12-05 10:48:53.307844+00,48.8647947331085,2.33556196039709,Trappe télécom,"5, Rue Molière, Quartier du Palais Royal, Paris 1er Arrondissement, Paris, Île-de-France, France métropolitaine, 75001, France",true,false,false
+6,2025-12-05 10:57:36.785228+00,48.8638081,2.3361368,Autre,"1, Rue de Montpensier, Quartier du Palais Royal, Paris 1er Arrondissement, Paris, Île-de-France, France métropolitaine, 75001, France",true,false,false
+7,2025-12-05 11:02:57.987214+00,48.8647558030143,2.33667816570409,Trappe télécom,"17, Rue de Montpensier, Quartier du Palais Royal, Paris 1er Arrondissement, Paris, Île-de-France, France métropolitaine, 75001, France",true,false,false
+8,2025-12-05 11:07:19.090384+00,48.8657731502737,2.33740112433315,Trappe télécom,"34, Rue de Montpensier, Quartier du Palais Royal, Paris 1er Arrondissement, Paris, Île-de-France, France métropolitaine, 75001, France",true,false,false
+9,2025-12-05 11:20:20.994042+00,48.8626414,2.3365386,Trappe télécom,"Place du Palais Royal, Quartier du Palais Royal, Paris 1er Arrondissement, Paris, Île-de-France, France métropolitaine, 75001, France",true,false,false
+10,2025-12-05 11:21:40.25415+00,48.8621017,2.3373621,Trappe télécom,"168, Rue de Rivoli, Quartier du Palais Royal, Paris 1er Arrondissement, Paris, Île-de-France, France métropolitaine, 75001, France",true,false,false
