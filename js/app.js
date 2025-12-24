@@ -74,6 +74,7 @@ async function handleMapClick(e) {
     created_at: now,
     updated_at: now,
     source: "local",
+    sync_pending: true,
   };
 
   await upsertCache(cache);
@@ -81,9 +82,25 @@ async function handleMapClick(e) {
 
   try {
     await postCache(cache);
+    cache.sync_pending = false;
+    await upsertCache(cache);
     setStatus("Cache envoyee.");
   } catch (error) {
     setStatus("Sauvee localement. Sync en attente.");
+  }
+}
+
+async function syncPendingCaches() {
+  if (!navigator.onLine) return;
+  const caches = await getAllCaches();
+  const pending = caches.filter((cache) => cache.sync_pending);
+  for (const cache of pending) {
+    try {
+      await postCache(cache);
+      await upsertCache({ ...cache, sync_pending: false });
+    } catch (error) {
+      break;
+    }
   }
 }
 
@@ -91,6 +108,7 @@ async function pullAndMerge() {
   setStatus("Sync en cours...");
   const since = localStorage.getItem(LAST_SYNC_KEY);
   try {
+    await syncPendingCaches();
     const result = await pullSince(since);
     if (result && result.ok && Array.isArray(result.data)) {
       if (result.data.length > 0) {
@@ -177,6 +195,8 @@ function initApp() {
     .then(pullAndMerge);
   setInterval(pullAndMerge, 10000);
   registerServiceWorker();
+
+  window.addEventListener("online", pullAndMerge);
 
   let resizeTimer;
   window.addEventListener("resize", () => {

@@ -1,4 +1,6 @@
 const CACHE_NAME = "geovas-cache-v1";
+const TILES_CACHE = "geovas-tiles-v1";
+const TILE_HOST_SUFFIX = ".tile.openstreetmap.org";
 const ASSETS = [
   "./",
   "./index.html",
@@ -40,6 +42,25 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const request = event.request;
   if (request.method !== "GET") return;
+  const url = new URL(request.url);
+  if (url.hostname.endsWith(TILE_HOST_SUFFIX)) {
+    event.respondWith(
+      caches.open(TILES_CACHE).then(async (cache) => {
+        const cached = await cache.match(request);
+        if (cached) return cached;
+        try {
+          const response = await fetch(request);
+          if (response.ok) {
+            cache.put(request, response.clone());
+          }
+          return response;
+        } catch (error) {
+          return cached;
+        }
+      })
+    );
+    return;
+  }
   event.respondWith(
     caches.match(request).then((cached) => cached || fetch(request))
   );
